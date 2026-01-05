@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obyda Tasnim | Frontend Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@11.0.8/dist/framer-motion.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00f5d4;
+            --secondary: #7b2cbf;
+            --accent: #f72585;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --light: #e0e0e0;
+            --gradient-1: linear-gradient(135deg, #00f5d4 0%, #7b2cbf 50%, #f72585 100%);
+            --gradient-2: linear-gradient(45deg, #00f5d4, #7b2cbf);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Syne', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-1);
+            border-radius: 10px;
+        }
+
+        .gradient-text {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glow {
+            filter: drop-shadow(0 0 20px rgba(0, 245, 212, 0.5));
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.9; }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
+
+        .morphing-blob {
+            animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite;
+        }
+
+        .skill-bar {
+            position: relative;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .skill-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .project-card {
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .magnetic-btn {
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .magnetic-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--accent));
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 12px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            border: 3px solid var(--darker);
+            z-index: 1;
+        }
+
+        input, textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+        }
+
+        .social-icon {
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 245, 212, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .cursor-glow {
+                display: none;
+            }
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: floatShape 20s ease-in-out infinite;
+        }
+
+        @keyframes floatShape {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(20px) rotate(-5deg); }
+        }
+
+        .hero-image-container {
+            position: relative;
+        }
+
+        .hero-image-container::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotate 10s linear infinite;
+        }
+
+        .hero-image-container::after {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            z-index: -2;
+            filter: blur(40px);
+            opacity: 0.5;
+        }
+
+        .text-reveal {
+            overflow: hidden;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background: rgba(5, 5, 8, 0.98);
+                backdrop-filter: blur(20px);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 40px;
+                transition: right 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+                z-index: 1000;
+            }
+
+            .mobile-menu.active {
+                right: 0;
+            }
+
+            .mobile-menu a {
+                font-size: 28px;
+                font-weight: 600;
+            }
+        }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <div class="noise"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { motion, AnimatePresence, useInView, useScroll, useTransform } = Motion;
+
+        // Initialize EmailJS
+        emailjs.init("Amys0SEGlrfRzOq0K"); // Replace with your EmailJS public key
+
+        // Custom Hook for Mouse Position
+        const useMousePosition = () => {
+            const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+            
+            useEffect(() => {
+                const updateMousePosition = (e) => {
+                    setMousePosition({ x: e.clientX, y: e.clientY });
+                };
+                
+                window.addEventListener('mousemove', updateMousePosition);
+                return () => window.removeEventListener('mousemove', updateMousePosition);
+            }, []);
+            
+            return mousePosition;
+        };
+
+        // Animated Text Component
+        const AnimatedText = ({ text, className, delay = 0 }) => {
+            const words = text.split(' ');
+            
+            return (
+                <motion.span className={className}>
+                    {words.map((word, index) => (
+                        <motion.span
+                            key={index}
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: delay + index * 0.1 }}
+                            style={{ display: 'inline-block', marginRight: '0.5rem' }}
+                        >
+                            {word}
+                        </motion.span>
+                    ))}
+                </motion.span>
+            );
+        };
+
+        // Navbar Component
+        const Navbar = () => {
+            const [scrolled, setScrolled] = useState(false);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const navLinks = [
+                { name: 'Home', href: '#home' },
+                { name: 'About', href: '#about' },
+                { name: 'Skills', href: '#skills' },
+                { name: 'Projects', href: '#projects' },
+                { name: 'Experience', href: '#experience' },
+                { name: 'Contact', href: '#contact' },
+            ];
+
+            return (
+                <>
+                    <motion.nav
+                        initial={{ y: -100 }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+                            scrolled ? 'glass-strong py-4' : 'py-6'
+                        }`}
+                    >
+                        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                            <motion.a 
+                                href="#home"
+                                className="text-2xl font-bold gradient-text"
+                                whileHover={{ scale: 1.05 }}
+                            >
+                                OT<span className="text-white">.</span>
+                            </motion.a>
+                            
+                            <div className="hidden md:flex items-center gap-8">
+                                {navLinks.map((link, index) => (
+                                    <motion.a
+                                        key={link.name}
+                                        href={link.href}
+                                        className="nav-link text-gray-300 hover:text-white transition-colors"
+                                        initial={{ opacity: 0, y: -20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.1 }}
+                                    >
+                                        {link.name}
+                                    </motion.a>
+                                ))}
+                                <motion.a
+                                    href="#contact"
+                                    className="magnetic-btn px-6 py-2.5 rounded-full bg-gradient-to-r from-[#00f5d4] via-[#7b2cbf] to-[#f72585] text-white font-semibold"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Hire Me
+                                </motion.a>
+                            </div>
+
+                            <div 
+                                className={`hamburger ${mobileMenuOpen ? 'active' : ''}`}
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            >
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </motion.nav>
+
+                    <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}>
+                        {navLinks.map((link, index) => (
+                            <motion.a
+                                key={link.name}
+                                href={link.href}
+                                className="text-white nav-link"
+                                onClick={() => setMobileMenuOpen(false)}
+                                initial={{ opacity: 0, x: 50 }}
+                                animate={{ opacity: mobileMenuOpen ? 1 : 0, x: mobileMenuOpen ? 0 : 50 }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                {link.name}
+                            </motion.a>
+                        ))}
+                    </div>
+                </>
+            );
+        };
+
+// Preloader Component - Add this inside your App component
+const Preloader = ({ onComplete }) => {
+    const [progress, setProgress] = useState(0);
+    const [isComplete, setIsComplete] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        setIsComplete(true);
+                        setTimeout(onComplete, 800);
+                    }, 500);
+                    return 100;
+                }
+                return prev + Math.random() * 15;
+            });
+        }, 150);
+
+        return () => clearInterval(interval);
+    }, [onComplete]);
+
+    return (
+        <AnimatePresence>
+            {!isComplete && (
+                <motion.div
+                    initial={{ opacity: 1 }}
+                    exit={{ 
+                        opacity: 0,
+                        scale: 1.1,
+                        filter: "blur(10px)"
+                    }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
+                    style={{ background: 'linear-gradient(135deg, #050508 0%, #0a0a1a 50%, #050508 100%)' }}
+                >
+                    {/* Animated Background Blobs */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <motion.div
+                            animate={{ 
+                                scale: [1, 1.2, 1],
+                                rotate: [0, 180, 360],
+                                x: [0, 50, 0],
+                                y: [0, -30, 0]
+                            }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00f5d4]/20 rounded-full blur-[120px]"
+                        />
+                        <motion.div
+                            animate={{ 
+                                scale: [1.2, 1, 1.2],
+                                rotate: [360, 180, 0],
+                                x: [0, -50, 0],
+                                y: [0, 30, 0]
+                            }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#7b2cbf]/20 rounded-full blur-[120px]"
+                        />
+                        <motion.div
+                            animate={{ 
+                                scale: [1, 1.3, 1],
+                                rotate: [0, -180, -360]
+                            }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-[#f72585]/15 rounded-full blur-[100px]"
+                        />
+                    </div>
+
+                    {/* Main Loader Container */}
+                    <div className="relative z-10 flex flex-col items-center">
+                        
+                        {/* Spinning Rings */}
+                        <div className="relative w-40 h-40 mb-12">
+                            {/* Outer Ring */}
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-0 rounded-full"
+                                style={{
+                                    background: 'conic-gradient(from 0deg, #00f5d4, #7b2cbf, #f72585, #00f5d4)',
+                                    padding: '3px',
+                                }}
+                            >
+                                <div className="w-full h-full rounded-full bg-[#050508]" />
+                            </motion.div>
+
+                            {/* Middle Ring */}
+                            <motion.div
+                                animate={{ rotate: -360 }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-4 rounded-full"
+                                style={{
+                                    background: 'conic-gradient(from 180deg, #f72585, #7b2cbf, #00f5d4, #f72585)',
+                                    padding: '2px',
+                                }}
+                            >
+                                <div className="w-full h-full rounded-full bg-[#050508]" />
+                            </motion.div>
+
+                            {/* Inner Ring */}
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-8 rounded-full"
+                                style={{
+                                    background: 'conic-gradient(from 90deg, #00f5d4, transparent, #00f5d4)',
+                                    padding: '2px',
+                                }}
+                            >
+                                <div className="w-full h-full rounded-full bg-[#050508]" />
+                            </motion.div>
+
+                            {/* Center Pulsing Dot */}
+                            <motion.div
+                                animate={{ 
+                                    scale: [1, 1.2, 1],
+                                    opacity: [0.5, 1, 0.5]
+                                }}
+                                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute inset-[52px] rounded-full bg-gradient-to-br from-[#00f5d4] via-[#7b2cbf] to-[#f72585]"
+                                style={{
+                                    boxShadow: '0 0 40px rgba(0, 245, 212, 0.5), 0 0 80px rgba(123, 44, 191, 0.3)'
+                                }}
+                            />
+                        </div>
+
+                        {/* Welcome Text with Letter Animation */}
+                        <div className="overflow-hidden mb-8">
+                            <motion.div className="flex">
+                                {"WELCOME".split("").map((letter, index) => (
+                                    <motion.span
+                                        key={index}
+                                        initial={{ y: 100, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{
+                                            delay: 0.1 + index * 0.1,
+                                            duration: 0.6,
+                                            ease: [0.6, 0.01, -0.05, 0.95]
+                                        }}
+                                        className="text-5xl md:text-7xl font-bold tracking-wider gradient-text"
+                                        style={{
+                                            fontFamily: 'Syne, sans-serif',
+                                        }}
+                                    >
+                                        {letter}
+                                    </motion.span>
+                                ))}
+                            </motion.div>
+                        </div>
+
+                        {/* Subtitle */}
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 1, duration: 0.6 }}
+                            className="text-gray-400 text-lg tracking-[0.3em] uppercase mb-8"
+                        >
+                            WELCOME
+                        </motion.p>
+
+                        {/* Animated Dots */}
+                        <div className="flex gap-2 mb-8">
+                            {[0, 1, 2].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    animate={{
+                                        y: [-5, 5, -5],
+                                        opacity: [0.3, 1, 0.3]
+                                    }}
+                                    transition={{
+                                        duration: 0.8,
+                                        repeat: Infinity,
+                                        delay: i * 0.15,
+                                        ease: "easeInOut"
+                                    }}
+                                    className="w-2 h-2 rounded-full bg-[#00f5d4]"
+                                />
+                            ))}
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="w-64 md:w-80">
+                            <div className="h-1 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${Math.min(progress, 100)}%` }}
+                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                    className="h-full rounded-full relative"
+                                    style={{
+                                        background: 'linear-gradient(90deg, #00f5d4, #7b2cbf, #f72585)',
+                                        boxShadow: '0 0 20px rgba(0, 245, 212, 0.5)'
+                                    }}
+                                >
+                                    {/* Shimmer effect */}
+                                    <motion.div
+                                        animate={{ x: ['-100%', '200%'] }}
+                                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                        className="absolute inset-0 w-1/2"
+                                        style={{
+                                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)'
+                                        }}
+                                    />
+                                </motion.div>
+                            </div>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5 }}
+                                className="text-center text-gray-500 text-sm mt-4 tracking-widest"
+                            >
+                                {Math.min(Math.round(progress), 100)}%
+                            </motion.p>
+                        </div>
+                    </div>
+
+                    {/* Floating Particles */}
+                    {[...Array(15)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ 
+                                opacity: 0,
+                                y: '100vh'
+                            }}
+                            animate={{ 
+                                y: '-10vh',
+                                opacity: [0, 1, 1, 0]
+                            }}
+                            transition={{
+                                duration: Math.random() * 3 + 3,
+                                repeat: Infinity,
+                                delay: Math.random() * 2,
+                                ease: "linear"
+                            }}
+                            className="absolute w-1 h-1 rounded-full"
+                            style={{
+                                background: ['#00f5d4', '#7b2cbf', '#f72585'][i % 3],
+                                left: `${Math.random() * 100}%`,
+                                boxShadow: `0 0 10px ${['#00f5d4', '#7b2cbf', '#f72585'][i % 3]}`
+                            }}
+                        />
+                    ))}
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+
+
+
+
+        // Hero Section
+        const Hero = () => {
+            const mousePosition = useMousePosition();
+            
+            const socialLinks = [
+                { name: 'GitHub', icon: 'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z', href: 'https://github.com' },
+                { name: 'LinkedIn', icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z', href: 'https://linkedin.com' },
+                { name: 'Twitter', icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z', href: 'https://twitter.com' },
+                { name: 'Facebook', icon: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z', href: 'https://facebook.com' },
+            ];
+
+            return (
+                <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden grid-pattern">
+                    {/* Background Elements */}
+                    <div className="blob morphing-blob w-[500px] h-[500px] bg-[#00f5d4] top-[-200px] left-[-200px]" style={{ animationDelay: '0s' }}></div>
+                    <div className="blob morphing-blob w-[400px] h-[400px] bg-[#7b2cbf] bottom-[-150px] right-[-150px]" style={{ animationDelay: '2s' }}></div>
+                    <div className="blob morphing-blob w-[300px] h-[300px] bg-[#f72585] top-[50%] left-[50%]" style={{ animationDelay: '4s' }}></div>
+
+                    {/* Cursor Glow */}
+                    <div 
+                        className="cursor-glow"
+                        style={{ left: mousePosition.x, top: mousePosition.y }}
+                    ></div>
+
+                    <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
+                            {/* Left Content */}
+                            <div className="flex-1 text-center lg:text-left">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.6 }}
+                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6"
+                                >
+                                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                    <span className="text-sm text-gray-300">Available for work</span>
+                                </motion.div>
+
+                                <motion.h1 
+                                    className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.8 }}
+                                >
+                                    <AnimatedText text="Hi, I'm" className="text-gray-400 block text-3xl md:text-4xl mb-2" />
+                                    <AnimatedText text="Obyda Tasnim" className="gradient-text block" delay={0.3} />
+                                </motion.h1>
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.8, duration: 0.6 }}
+                                    className="flex items-center justify-center lg:justify-start gap-3 mb-6"
+                                >
+                                    <div className="w-16 h-[2px] bg-gradient-to-r from-[#00f5d4] to-transparent"></div>
+                                    <h2 className="text-2xl md:text-3xl text-white font-light">Full Stack Developer</h2>
+                                </motion.div>
+
+                                <motion.p
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 1, duration: 0.6 }}
+                                    className="text-lg text-gray-400 max-w-xl mb-10 mx-auto lg:mx-0"
+                                >
+                                    Crafting exceptional digital experiences through clean code and creative design. 
+                                    Specializing in React, Node.js, and modern web technologies.
+                                </motion.p>
+
+                                {/* CTA Buttons */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 1.2, duration: 0.6 }}
+                                    className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-12"
+                                >
+                                    <motion.a
+                                        href="/resume.pdf"
+                                        download
+                                        className="magnetic-btn group relative px-8 py-4 rounded-full bg-gradient-to-r from-[#00f5d4] via-[#7b2cbf] to-[#f72585] text-white font-semibold overflow-hidden"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <span className="relative z-10 flex items-center gap-2">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            Download Resume
+                                        </span>
+                                    </motion.a>
+                                    <motion.a
+                                        href="#projects"
+                                        className="magnetic-btn px-8 py-4 rounded-full border-2 border-gray-600 text-white font-semibold hover:border-[#00f5d4] hover:text-[#00f5d4] transition-colors"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        View Projects
+                                    </motion.a>
+                                </motion.div>
+
+                                {/* Social Links */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 1.4, duration: 0.6 }}
+                                    className="flex items-center justify-center lg:justify-start gap-4"
+                                >
+                                    {socialLinks.map((social, index) => (
+                                        <motion.a
+                                            key={social.name}
+                                            href={social.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="social-icon w-12 h-12 flex items-center justify-center rounded-full glass hover:bg-[#00f5d4]/20"
+                                            initial={{ opacity: 0, scale: 0 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: 1.4 + index * 0.1 }}
+                                            whileHover={{ scale: 1.1, y: -5 }}
+                                        >
+                                            <svg className="w-5 h-5 fill-current text-gray-300 hover:text-[#00f5d4] transition-colors" viewBox="0 0 24 24">
+                                                <path d={social.icon} />
+                                            </svg>
+                                        </motion.a>
+                                    ))}
+                                </motion.div>
+                            </div>
+
+                            {/* Right Content - Profile Image */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.5, duration: 0.8 }}
+                                className="flex-shrink-0"
+                            >
+                                <div className="hero-image-container w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden">
+                                    <img 
+                                        src="obu.jpeg"
+                                        alt="John Doe"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* Scroll Indicator */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 2, duration: 1 }}
+                            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+                        >
+                            <motion.div
+                                animate={{ y: [0, 10, 0] }}
+                                transition={{ repeat: Infinity, duration: 1.5 }}
+                                className="flex flex-col items-center gap-2"
+                            >
+                                <span className="text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
+                                <div className="w-6 h-10 rounded-full border-2 border-gray-600 flex justify-center pt-2">
+                                    <motion.div
+                                        animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
+                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                        className="w-1.5 h-1.5 rounded-full bg-[#00f5d4]"
+                                    />
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        };
+
+        // About Section
+        const About = () => {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+            // const stats = [
+            //     { number: "3+", label: "Years Experience" },
+            //     { number: "50+", label: "Projects Completed" },
+            //     { number: "30+", label: "Happy Clients" },
+            //     { number: "15+", label: "Technologies" },
+            // ];
+
+            return (
+                <section id="about" className="py-32 relative overflow-hidden" ref={ref}>
+                    <div className="max-w-7xl mx-auto px-6">
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.8 }}
+                            className="grid lg:grid-cols-2 gap-16 items-center"
+                        >
+                            {/* Left - Image */}
+                            <div className="relative">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                                    transition={{ delay: 0.2, duration: 0.8 }}
+                                    className="relative z-10"
+                                >
+                                    <div className="relative">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?w=600&h=700&fit=crop"
+                                            alt="About"
+                                            className="rounded-3xl w-full"
+                                        />
+                                        <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-[#050508] via-transparent to-transparent"></div>
+                                    </div>
+                                    
+                                    {/* Floating Card */}
+                                </motion.div>
+
+                                {/* Background Decoration */}
+                                <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-[#7b2cbf]/20 rounded-full blur-[100px]"></div>
+                            </div>
+
+                            {/* Right - Content */}
+                            <div>
+                                <motion.span
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 0.6 }}
+                                    className="text-[#00f5d4] uppercase tracking-widest text-sm font-semibold"
+                                >
+                                    About Me
+                                </motion.span>
+                                
+                                <motion.h2
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ delay: 0.1, duration: 0.6 }}
+                                    className="text-4xl md:text-5xl font-bold mt-4 mb-8 section-title"
+                                >
+                                    Passionate Developer<br />
+                                    <span className="gradient-text">Creative Thinker</span>
+                                </motion.h2>
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ delay: 0.2, duration: 0.6 }}
+                                    className="space-y-6 text-gray-400 leading-relaxed"
+                                >
+                                    <p>
+                                        Hey there! I'm John, a passionate Full Stack Developer with over 3 years of experience 
+                                        in building exceptional digital experiences. My journey into programming started during 
+                                        my college years when I built my first website for a local business, and I've been 
+                                        hooked ever since.
+                                    </p>
+                                    <p>
+                                        I love working on challenging projects that push me to learn new technologies and 
+                                        solve complex problems. Whether it's crafting pixel-perfect UIs, building robust 
+                                        backend systems, or optimizing database queries, I find joy in every aspect of 
+                                        software development.
+                                    </p>
+                                    <p>
+                                        When I'm not coding, you'll find me exploring hiking trails 🥾, experimenting with 
+                                        photography 📷, playing chess ♟️, or diving into the latest sci-fi novels. I believe 
+                                        these hobbies help me bring fresh perspectives and creativity to my work.
+                                    </p>
+                                </motion.div>
+
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Skills Section
+        const Skills = () => {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+            // Tech logos as SVG paths or CDN URLs
+            const techLogos = {
+                // Frontend
+                "React.js": { color: "#61DAFB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+                "Next.js": { color: "#ffffff", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", invert: true },
+                "TypeScript": { color: "#3178C6", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
+                "Tailwind CSS": { color: "#06B6D4", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" },
+                "Framer Motion": { color: "#FF0055", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/framermotion/framermotion-original.svg" },
+                "JavaScript": { color: "#F7DF1E", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
+                "HTML5": { color: "#E34F26", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
+                "CSS3": { color: "#1572B6", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
+                // Backend
+                "Node.js": { color: "#339933", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+                "Express.js": { color: "#ffffff", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", invert: true },
+                "Python": { color: "#3776AB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+                "GraphQL": { color: "#E10098", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/graphql/graphql-plain.svg" },
+                "REST APIs": { color: "#00f5d4", logo: null, icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+                // Database
+                "MongoDB": { color: "#47A248", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
+                "PostgreSQL": { color: "#4169E1", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
+                "MySQL": { color: "#4479A1", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+                "Redis": { color: "#DC382D", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" },
+                "Firebase": { color: "#FFCA28", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" },
+                // Tools
+                "Git": { color: "#F05032", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+                "GitHub": { color: "#ffffff", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg", invert: true },
+                "Docker": { color: "#2496ED", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
+                "AWS": { color: "#FF9900", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" },
+                "Figma": { color: "#F24E1E", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
+                "Linux": { color: "#FCC624", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" },
+                "VS Code": { color: "#007ACC", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" },
+            };
+
+            const skillCategories = [
+                {
+                    title: "Frontend",
+                    icon: "🎨",
+                    gradient: "from-[#61DAFB] to-[#3178C6]",
+                    skills: ["React.js", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "HTML5", "CSS3", "Framer Motion"]
+                },
+                {
+                    title: "Backend",
+                    icon: "⚡",
+                    gradient: "from-[#339933] to-[#E10098]",
+                    skills: ["Node.js", "Express.js", "Python", "GraphQL", "REST APIs"]
+                },
+                {
+                    title: "Database",
+                    icon: "🗄️",
+                    gradient: "from-[#47A248] to-[#DC382D]",
+                    skills: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Firebase"]
+                },
+                {
+                    title: "Tools & DevOps",
+                    icon: "🛠️",
+                    gradient: "from-[#F05032] to-[#2496ED]",
+                    skills: ["Git", "GitHub", "Docker", "AWS", "Figma", "VS Code", "Linux"]
+                }
+            ];
+
+            const SkillCard = ({ skill, index, categoryIndex }) => {
+                const tech = techLogos[skill];
+                const [isHovered, setIsHovered] = useState(false);
+                
+                return (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0, rotate: -10 }}
+                        animate={isInView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                        transition={{ 
+                            delay: categoryIndex * 0.1 + index * 0.05,
+                            duration: 0.5,
+                            type: "spring",
+                            stiffness: 200
+                        }}
+                        whileHover={{ 
+                            scale: 1.1, 
+                            y: -8,
+                            transition: { duration: 0.2 }
+                        }}
+                        onHoverStart={() => setIsHovered(true)}
+                        onHoverEnd={() => setIsHovered(false)}
+                        className="relative group"
+                    >
+                        <div 
+                            className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300"
+                            style={{
+                                background: isHovered 
+                                    ? `linear-gradient(135deg, ${tech?.color}20 0%, ${tech?.color}10 100%)`
+                                    : 'rgba(255, 255, 255, 0.03)',
+                                border: isHovered 
+                                    ? `2px solid ${tech?.color}60`
+                                    : '1px solid rgba(255, 255, 255, 0.08)',
+                                boxShadow: isHovered 
+                                    ? `0 20px 40px ${tech?.color}20, 0 0 30px ${tech?.color}15`
+                                    : 'none'
+                            }}
+                        >
+                            {/* Glow effect on hover */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: isHovered ? 1 : 0 }}
+                                className="absolute inset-0 rounded-2xl"
+                                style={{
+                                    background: `radial-gradient(circle at center, ${tech?.color}30 0%, transparent 70%)`,
+                                }}
+                            />
+                            
+                            {/* Logo */}
+                            <div className="relative z-10 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
+                                {tech?.logo ? (
+                                    <img 
+                                        src={tech.logo} 
+                                        alt={skill}
+                                        className={`w-full h-full object-contain transition-all duration-300 ${tech.invert ? 'invert' : ''}`}
+                                        style={{
+                                            filter: isHovered ? 'drop-shadow(0 0 10px ' + tech.color + ')' : 'none'
+                                        }}
+                                    />
+                                ) : tech?.icon ? (
+                                    <svg 
+                                        className="w-full h-full transition-all duration-300" 
+                                        fill="none" 
+                                        stroke={tech.color} 
+                                        viewBox="0 0 24 24"
+                                        style={{
+                                            filter: isHovered ? 'drop-shadow(0 0 10px ' + tech.color + ')' : 'none'
+                                        }}
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tech.icon} />
+                                    </svg>
+                                ) : (
+                                    <div 
+                                        className="w-full h-full rounded-lg"
+                                        style={{ backgroundColor: tech?.color || '#666' }}
+                                    />
+                                )}
+                            </div>
+                            
+                            {/* Skill name */}
+                            <span className="relative z-10 text-xs text-center text-gray-400 font-medium transition-colors duration-300 group-hover:text-white px-1 leading-tight">
+                                {skill}
+                            </span>
+                        </div>
+                        
+                        {/* Floating tooltip */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                            animate={{ 
+                                opacity: isHovered ? 1 : 0, 
+                                y: isHovered ? 0 : 10,
+                                scale: isHovered ? 1 : 0.8
+                            }}
+                            className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap z-20"
+                            style={{
+                                background: tech?.color,
+                                color: tech?.color === '#F7DF1E' || tech?.color === '#FFCA28' || tech?.color === '#FCC624' ? '#000' : '#fff'
+                            }}
+                        >
+                            {skill}
+                        </motion.div>
+                    </motion.div>
+                );
+            };
+
+            return (
+                <section id="skills" className="py-32 relative overflow-hidden" ref={ref}>
+                    {/* Background decorations */}
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-[#00f5d4]/10 rounded-full blur-[150px]"></div>
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#f72585]/10 rounded-full blur-[150px]"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#7b2cbf]/5 rounded-full blur-[200px]"></div>
+
+                    <div className="max-w-7xl mx-auto px-6 relative z-10">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-20"
+                        >
+                            <span className="text-[#00f5d4] uppercase tracking-widest text-sm font-semibold">My Skills</span>
+                            <h2 className="text-4xl md:text-5xl font-bold mt-4 section-title mx-auto" style={{ display: 'inline-block' }}>
+                                Technologies I <span className="gradient-text">Master</span>
+                            </h2>
+                            <p className="text-gray-400 mt-6 max-w-2xl mx-auto">
+                                A collection of tools and technologies I use to bring ideas to life
+                            </p>
+                        </motion.div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {skillCategories.map((category, categoryIndex) => (
+                                <motion.div
+                                    key={category.title}
+                                    initial={{ opacity: 0, y: 50 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ delay: categoryIndex * 0.15, duration: 0.6 }}
+                                    className="glass-strong rounded-3xl p-8 hover:border-[#00f5d4]/30 transition-all duration-500 group"
+                                >
+                                    {/* Category Header */}
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${category.gradient} flex items-center justify-center text-2xl shadow-lg`}>
+                                            {category.icon}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-2xl font-bold">{category.title}</h3>
+                                            <p className="text-gray-500 text-sm">{category.skills.length} technologies</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Skills Grid with Logos */}
+                                    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                                        {category.skills.map((skill, skillIndex) => (
+                                            <SkillCard 
+                                                key={skill} 
+                                                skill={skill} 
+                                                index={skillIndex}
+                                                categoryIndex={categoryIndex}
+                                            />
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Additional Skills Marquee */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ delay: 0.8, duration: 0.6 }}
+                            className="mt-16"
+                        >
+                            <div className="text-center mb-8">
+                                <span className="text-gray-500 text-sm uppercase tracking-widest">And many more...</span>
+                            </div>
+                            <div className="relative overflow-hidden py-4">
+                                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#050508] to-transparent z-10"></div>
+                                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#050508] to-transparent z-10"></div>
+                                <motion.div 
+                                    className="flex gap-8 items-center"
+                                    animate={{ x: [0, -1000] }}
+                                    transition={{ 
+                                        duration: 20, 
+                                        repeat: Infinity, 
+                                        ease: "linear",
+                                        repeatType: "loop"
+                                    }}
+                                >
+                                    {[...Object.keys(techLogos), ...Object.keys(techLogos)].map((tech, index) => (
+                                        <div 
+                                            key={index}
+                                            className="flex items-center gap-2 px-4 py-2 rounded-full glass whitespace-nowrap"
+                                        >
+                                            {techLogos[tech]?.logo && (
+                                                <img 
+                                                    src={techLogos[tech].logo} 
+                                                    alt={tech}
+                                                    className={`w-5 h-5 ${techLogos[tech].invert ? 'invert' : ''}`}
+                                                />
+                                            )}
+                                            <span className="text-gray-400 text-sm">{tech}</span>
+                                        </div>
+                                    ))}
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Projects Section
+        const Projects = () => {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true, margin: "-100px" });
+            const [selectedProject, setSelectedProject] = useState(null);
+
+            const projects = [
+                {
+                    id: 1,
+                    title: "Financial Lending Platform",
+                    description: "A modern, full-featured microloan management platform where LoanLink connects borrowers with loan providers, streamlining the loan application and approval process..",
+                    image: "https://www.kreditbee.in/blog/content/images/2024/01/shutterstock_2317389437-min.jpg",
+                    techStack: ["React", "Node.js", "MongoDB", "Tailwind CSS", "Framer Motion", "Stripe", "Swiper", "JWT" ],
+                    liveLink: "https://loan-link-obyda.netlify.app/",
+                    githubLink: "https://github.com/ObydaTasnim/B12-A11_PH-assignment-client",
+                    challenges: "Implementing real-time inventory updates and handling concurrent checkout sessions was challenging. Had to implement optimistic UI updates and proper database transaction handling.",
+                    improvements: "Planning to add AI-powered loan recommendations, mobile app version, and multi-client support in future releases."
+                },
+                {
+                    id: 2,
+                    title: "Freelance Hub",
+                    description: "A trusted platform for connecting freelancers with opportunities. Build your career, find the perfect job, and grow your business with us.",
+                    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&h=500&fit=crop",
+                    techStack: ["React", "Tailwind CSS", "Firebase Auth", "Framer Motion", "Sonner/Toast"],
+                    liveLink: "https://freelance-obyda.netlify.app/",
+                    githubLink: "https://github.com/ObydaTasnim/freelance-client",
+                    challenges: "Building the real-time collaboration feature with proper conflict resolution when multiple users edit simultaneously was the biggest challenge.",
+                    improvements: "Planning to add more sections, and integration with popular tools like Slack and Discord."
+                },
+                {
+                    id: 3,
+                    title: "Green Plant Shop",
+                    description: "A responsive and interactive web application that helps users explore, learn, and book consultations for indoor plants.Your trusted partner in creating a greener, healthier living space with beautiful indoor plants.",
+                    image: "https",
+                    techStack: ["React", "Tailwind CSS", "Firebase Auth", "SwiperJS", "Toast"],
+                    liveLink: "https://greenplants-a9.netlify.app/",
+                    githubLink: "https://github.com/ObydaTasnim/B12--A9-Green-Plant",
+                    challenges: "Creating a fully responsive interface across all devices was challenging. Managing  authentication and maintaining proper user state handling required careful implementation. Organizing plant content efficiently while keeping the application fast and user-friendly was also a key challenge",
+                    improvements: "In the future, I plan to add richer plant care content such as guides and videos, introduce an admin dashboard for better content management."
+                },
+                // {
+                //     id: 4,
+                //     title: "",
+                //     description: "",
+                //     image: "",
+                //     techStack: [""],
+                //     liveLink: "",
+                //     githubLink: "",
+                //     challenges: "Creating smooth, interactive data visualizations that work well on mobile devices required careful optimization and responsive design.",
+                //     improvements: "Planning to integrate with wearable devices, add social features, and implement ML-based workout recommendations."
+                // }
+            ];
+
+            return (
+                <section id="projects" className="py-32 relative overflow-hidden" ref={ref}>
+                    <div className="max-w-7xl mx-auto px-6">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-20"
+                        >
+                            <span className="text-[#00f5d4] uppercase tracking-widest text-sm font-semibold">Portfolio</span>
+                            <h2 className="text-4xl md:text-5xl font-bold mt-4 section-title mx-auto" style={{ display: 'inline-block' }}>
+                                Featured <span className="gradient-text">Projects</span>
+                            </h2>
+                        </motion.div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {projects.map((project, index) => (
+                                <motion.div
+                                    key={project.id}
+                                    initial={{ opacity: 0, y: 50 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ delay: index * 0.15, duration: 0.6 }}
+                                    className="project-card glass-strong rounded-3xl overflow-hidden group"
+                                >
+                                    <div className="relative overflow-hidden">
+                                        <img 
+                                            src={project.image} 
+                                            alt={project.title}
+                                            className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-80"></div>
+                                        <div className="absolute bottom-4 left-4 flex gap-2 flex-wrap">
+                                            {project.techStack.slice(0, 3).map((tech, i) => (
+                                                <span key={i} className="px-3 py-1 text-xs font-medium bg-[#00f5d4]/20 text-[#00f5d4] rounded-full">
+                                                    {tech}
+                                                </span>
+                                            ))}
+                                            {project.techStack.length > 3 && (
+                                                <span className="px-3 py-1 text-xs font-medium bg-white/10 text-gray-300 rounded-full">
+                                                    +{project.techStack.length - 3}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="p-6">
+                                        <h3 className="text-2xl font-bold mb-3 group-hover:text-[#00f5d4] transition-colors">
+                                            {project.title}
+                                        </h3>
+                                        <p className="text-gray-400 mb-6 line-clamp-2">
+                                            {project.description}
+                                        </p>
+
+                                        <div className="flex items-center gap-4">
+                                            <motion.button
+                                                onClick={() => setSelectedProject(project)}
+                                                className="flex-1 py-3 px-6 rounded-full bg-gradient-to-r from-[#00f5d4] via-[#7b2cbf] to-[#f72585] text-white font-semibold"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                            >
+                                                View Details
+                                            </motion.button>
+                                            <motion.a
+                                                href={project.liveLink}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-12 h-12 flex items-center justify-center rounded-full glass hover:bg-[#00f5d4]/20 transition-colors"
+                                                whileHover={{ scale: 1.1 }}
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                </svg>
+                                            </motion.a>
+                                            <motion.a
+                                                href={project.githubLink}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-12 h-12 flex items-center justify-center rounded-full glass hover:bg-[#00f5d4]/20 transition-colors"
+                                                whileHover={{ scale: 1.1 }}
+                                            >
+                                                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                                </svg>
+                                            </motion.a>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Project Modal */}
+                    <AnimatePresence>
+                        {selectedProject && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                                onClick={() => setSelectedProject(null)}
+                            >
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9, y: 50 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 50 }}
+                                    className="glass-strong rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <div className="relative">
+                                        <img 
+                                            src={selectedProject.image} 
+                                            alt={selectedProject.title}
+                                            className="w-full h-64 md:h-80 object-cover"
+                                        />
+                                        <button
+                                            onClick={() => setSelectedProject(null)}
+                                            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-colors"
+                                        >
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div className="p-8">
+                                        <h3 className="text-3xl font-bold mb-4 gradient-text">{selectedProject.title}</h3>
+                                        
+                                        <div className="flex flex-wrap gap-2 mb-6">
+                                            {selectedProject.techStack.map((tech, i) => (
+                                                <span key={i} className="px-4 py-2 text-sm font-medium bg-[#00f5d4]/10 text-[#00f5d4] rounded-full border border-[#00f5d4]/30">
+                                                    {tech}
+                                                </span>
+                                            ))}
+                                        </div>
+
+                                        <div className="space-y-6 text-gray-300">
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-white mb-2">Description</h4>
+                                                <p>{selectedProject.description}</p>
+                                            </div>
+                                            
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-white mb-2">🎯 Challenges Faced</h4>
+                                                <p>{selectedProject.challenges}</p>
+                                            </div>
+                                            
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-white mb-2">🚀 Future Improvements</h4>
+                                                <p>{selectedProject.improvements}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-4 mt-8">
+                                            <motion.a
+                                                href={selectedProject.liveLink}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-1 py-4 px-6 rounded-full bg-gradient-to-r from-[#00f5d4] via-[#7b2cbf] to-[#f72585] text-white font-semibold text-center"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                            >
+                                                View Live Project
+                                            </motion.a>
+                                            <motion.a
+                                                href={selectedProject.githubLink}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-1 py-4 px-6 rounded-full border-2 border-gray-600 text-white font-semibold text-center hover:border-[#00f5d4] hover:text-[#00f5d4] transition-colors"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                            >
+                                                View Source Code
+                                            </motion.a>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </section>
+            );
+        };
+
+        // Experience & Education Section
+        const Experience = () => {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+            const experiences = [
+                {
+                    type: "education",
+                    title: "Bachelor of Computer Science",
+                    organization: "BRAC University",
+                    period: "2021 - 2026",
+                    description: "Graduated with honors. Specialized in Software Engineering and Web Technologies. GPA: 3.0/4.0",
+                },
+                  {
+                    type: "education",
+                    title: "HSC",
+                    organization: "Central Women's College",
+                    period: "2018 - 2020",
+                    description: "Graduated with science. GPA: 5.00",
+                },
+
+            ];
+
+            return (
+                <section id="experience" className="py-32 relative overflow-hidden" ref={ref}>
+                    <div className="absolute top-1/2 left-0 w-96 h-96 bg-[#7b2cbf]/10 rounded-full blur-[150px] -translate-y-1/2"></div>
+
+                    <div className="max-w-4xl mx-auto px-6 relative z-10">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-20"
+                        >
+                            <span className="text-[#00f5d4] uppercase tracking-widest text-sm font-semibold">Journey</span>
+                            <h2 className="text-4xl md:text-5xl font-bold mt-4 section-title mx-auto" style={{ display: 'inline-block' }}>
+                                <span className="gradient-text">Education</span>
+                            </h2>
+                        </motion.div>
+
+                        <div className="relative">
+                            <div className="timeline-line"></div>
+                            
+                            <div className="space-y-12">
+                                {experiences.map((item, index) => (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, x: -50 }}
+                                        animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                        transition={{ delay: index * 0.2, duration: 0.6 }}
+                                        className="relative pl-16"
+                                    >
+                                        <div className="timeline-dot" style={{ top: '6px' }}></div>
+                                        
+                                        <div className="glass-strong rounded-2xl p-6 hover:border-[#00f5d4]/30 transition-all duration-300">
+                                            <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                                                <div>
+                                                    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
+                                                        item.type === 'work' 
+                                                            ? 'bg-[#00f5d4]/20 text-[#00f5d4]' 
+                                                            : 'bg-[#f72585]/20 text-[#f72585]'
+                                                    }`}>
+                                                        {item.type === 'work' ? '💼 Work' : '🎓 Education'}
+                                                    </span>
+                                                    <h3 className="text-xl font-bold">{item.title}</h3>
+                                                    <p className="text-[#00f5d4]">{item.organization}</p>
+                                                </div>
+                                                <span className="text-gray-500 text-sm font-medium">{item.period}</span>
+                                            </div>
+                                            <p className="text-gray-400">{item.description}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Contact Section
+        const Contact = () => {
+            const ref = useRef(null);
+            const isInView = useInView(ref, { once: true, margin: "-100px" });
+            const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+            const [status, setStatus] = useState('');
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setStatus('sending');
+
+                try {
+                    // EmailJS configuration - Replace with your actual IDs
+                    await emailjs.send(
+                        "service_4ltpgcb", // Replace with your EmailJS service ID
+                        "template_39ei917", // Replace with your EmailJS template ID
+                        {
+                            from_name: formData.name,
+                            from_email: formData.email,
+                            subject: formData.subject,
+                            message: formData.message,
+                        }
+                    );
+                    setStatus('success');
+                    setFormData({ name: '', email: '', subject: '', message: '' });
+                } catch (error) {
+                    console.error('Error:', error);
+                    setStatus('error');
+                }
+
+                setTimeout(() => setStatus(''), 5000);
+            };
+
+            const contactInfo = [
+                {
+                    icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
+                    label: "Email",
+                    value: "tasnim.obyda@gmail.com",
+                    href: "mailto:tasnim.obyda@gmail.com"
+                },
+                {
+                    icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z",
+                    label: "Phone",
+                    value: "01789030825",
+                    href: "tel:01789030825"
+                },
+                {
+                    icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
+                    label: "WhatsApp",
+                    value: "01789030825",
+                    href: "https://wa.me/01789030825"
+                },
+            ];
+
+            return (
+                <section id="contact" className="py-32 relative overflow-hidden" ref={ref}>
+                    <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#00f5d4]/10 rounded-full blur-[150px]"></div>
+                    <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-[#f72585]/10 rounded-full blur-[150px]"></div>
+
+                    <div className="max-w-7xl mx-auto px-6 relative z-10">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-20"
+                        >
+                            <span className="text-[#00f5d4] uppercase tracking-widest text-sm font-semibold">Get In Touch</span>
+                            <h2 className="text-4xl md:text-5xl font-bold mt-4 section-title mx-auto" style={{ display: 'inline-block' }}>
+                                Let's Work <span className="gradient-text">Together</span>
+                            </h2>
+                            <p className="text-gray-400 mt-6 max-w-2xl mx-auto">
+                                Have a project in mind or want to collaborate? Feel free to reach out. I'm always open to discussing new opportunities.
+                            </p>
+                        </motion.div>
+
+                        <div className="grid lg:grid-cols-2 gap-12">
+                            {/* Contact Info */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -50 }}
+                                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ delay: 0.2, duration: 0.6 }}
+                            >
+                                <h3 className="text-2xl font-bold mb-8">Contact Information</h3>
+                                
+                                <div className="space-y-6 mb-12">
+                                    {contactInfo.map((info, index) => (
+                                        <motion.a
+                                            key={index}
+                                            href={info.href}
+                                            target={info.href.startsWith('http') ? '_blank' : undefined}
+                                            rel={info.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                            transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
+                                            className="flex items-center gap-4 p-4 glass rounded-2xl hover:border-[#00f5d4]/30 transition-all duration-300 group"
+                                        >
+                                            <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#00f5d4]/20 to-[#7b2cbf]/20 group-hover:from-[#00f5d4]/30 group-hover:to-[#7b2cbf]/30 transition-colors">
+                                                <svg className="w-6 h-6 text-[#00f5d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={info.icon} />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p className="text-gray-500 text-sm">{info.label}</p>
+                                                <p className="text-white font-medium group-hover:text-[#00f5d4] transition-colors">{info.value}</p>
+                                            </div>
+                                        </motion.a>
+                                    ))}
+                                </div>
+
+                                {/* Social Links */}
+                                <div>
+                                    <h4 className="text-lg font-semibold mb-4">Follow Me</h4>
+                                    <div className="flex gap-4">
+                                        {[
+                                            { name: 'GitHub', icon: 'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z', href: 'https://github.com/ObydaTasnim' },
+                                            { name: 'LinkedIn', icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z', href: 'www.linkedin.com/in/obyda-tasnim' },
+                                            // { name: 'Twitter', icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z', href: 'https://twitter.com' },
+                                        ].map((social, index) => (
+                                            <motion.a
+                                                key={social.name}
+                                                href={social.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="w-12 h-12 flex items-center justify-center rounded-full glass hover:bg-[#00f5d4]/20 transition-colors"
+                                                whileHover={{ scale: 1.1, y: -5 }}
+                                            >
+                                                <svg className="w-5 h-5 fill-current text-gray-300 hover:text-[#00f5d4] transition-colors" viewBox="0 0 24 24">
+                                                    <path d={social.icon} />
+                                                </svg>
+                                            </motion.a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Contact Form */}
+                            <motion.div
+                                initial={{ opacity: 0, x: 50 }}
+                                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                                transition={{ delay: 0.2, duration: 0.6 }}
+                            >
+                                <form onSubmit={handleSubmit} className="glass-strong rounded-3xl p-8">
+                                    <div className="grid md:grid-cols-2 gap-6 mb-6">
+                                        <div>
+                                            <label className="block text-gray-400 text-sm mb-2">Your Name</label>
+                                            <input
+                                                type="text"
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                                placeholder="John Doe"
+                                                required
+                                                className="w-full"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-gray-400 text-sm mb-2">Your Email</label>
+                                            <input
+                                                type="email"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                                placeholder="john@email.com"
+                                                required
+                                                className="w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="mb-6">
+                                        <label className="block text-gray-400 text-sm mb-2">Subject</label>
+                                        <input
+                                            type="text"
+                                            value={formData.subject}
+                                            onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                                            placeholder="Project Discussion"
+                                            required
+                                            className="w-full"
+                                        />
+                                    </div>
+
+                                    <div className="mb-8">
+                                        <label className="block text-gray-400 text-sm mb-2">Message</label>
+                                        <textarea
+                                            value={formData.message}
+                                            onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                            placeholder="Tell me about your project..."
+                                            rows={5}
+                                            required
+                                            className="w-full resize-none"
+                                        />
+                                    </div>
+
+                                    <motion.button
+                                        type="submit"
+                                        disabled={status === 'sending'}
+                                        className="w-full py-4 rounded-full bg-gradient-to-r from-[#00f5d4] via-[#7b2cbf] to-[#f72585] text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-70"
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        {status === 'sending' ? (
+                                            <>
+                                                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Send Message</span>
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </>
+                                        )}
+                                    </motion.button>
+
+                                    {status === 'success' && (
+                                        <motion.p
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="mt-4 text-center text-green-400"
+                                        >
+                                            ✓ Message sent successfully! I'll get back to you soon.
+                                        </motion.p>
+                                    )}
+
+                                    {status === 'error' && (
+                                        <motion.p
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="mt-4 text-center text-red-400"
+                                        >
+                                            ✗ Something went wrong. Please try again.
+                                        </motion.p>
+                                    )}
+                                </form>
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Footer
+        const Footer = () => {
+            return (
+                <footer className="py-12 border-t border-white/5">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold gradient-text">OT</span>
+                                <span className="text-gray-500">|</span>
+                                <span className="text-gray-400">Frontend Developer</span>
+                            </div>
+                            
+                            <p className="text-gray-500 text-sm">
+                                © {new Date().getFullYear()} Obyda Tasnim. All rights reserved.
+                            </p>
+
+                            <div className="flex items-center gap-4">
+                                <a href="#home" className="text-gray-400 hover:text-[#00f5d4] transition-colors text-sm">Home</a>
+                                <a href="#about" className="text-gray-400 hover:text-[#00f5d4] transition-colors text-sm">About</a>
+                                <a href="#projects" className="text-gray-400 hover:text-[#00f5d4] transition-colors text-sm">Projects</a>
+                                <a href="#contact" className="text-gray-400 hover:text-[#00f5d4] transition-colors text-sm">Contact</a>
+                            </div>
+                        </div>
+
+                      
+                    </div>
+                </footer>
+            );
+        };
+
+        // Main App
+        const App = () => {
+    const [loading, setLoading] = useState(true);
+
+    return (
+        <div className="min-h-screen">
+            {loading && <Preloader onComplete={() => setLoading(false)} />}
+            <Navbar />
+            <Hero />
+            <About />
+            <Skills />
+            <Projects />
+            <Experience />
+            <Contact />
+            <Footer />
+        </div>
+    );
+};
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
